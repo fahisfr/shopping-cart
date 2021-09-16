@@ -1,11 +1,12 @@
 <section>
-    <div class="container mt-5">
+    <div class="container mt-5 ">
         <div class="row">
             {{#each products}}
-            <di class="col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="/product-images/{{this.name}}.jpg" alt="Card image cap">
-                    <div class="card-body">
+            <di class="col-md-3 p-3" >
+                <div class="card" style="width: 15rem; height:23rem">
+                    <img class="card-img-top" src="/product-images/{{this.name}}.jpg" alt="Card image cap"
+                    style="height: 10rem;">
+                    <div class="card-body" >
                         <h5 class="card-title">{{this.name}}</h5>
                         <p class="card-text">{{this.description}}</p>
                         <a href="#" class="btn btn-primary">add card</a>
@@ -15,4 +16,4 @@
             {{/each}}
         </div>
     </div>
-</section> 
+</section>
