@@ -1,5 +1,5 @@
-<section>
-    <div class="container">
+<section >
+    <div class="container" >
         <dvi class="row">
             <a href="/admin/add-product" class="btn btn-success ml-auto">Add Products</a>
         </dvi>
@@ -21,10 +21,15 @@
             <tr>
                 <th scope="row">1</th>
                 <td>{{this.name}}</td>
-                <td>{{this.Category}}</td>
+                <td>{{this.category}}</td>
                 <td>{{this.price}}</td>
                 <td>{{this.description}}</td>
                 <td><img style="width: 50px; height:50px;" src="/product-images/{{this.name}}.jpg" alt=""></td>
+                <td >
+                    <a href="/admin/edit-product" class="btn btn-primary">Edit</a>
+                    <a href="/admin/delete-product/{{this.name}}" class="btn btn-danger" onclick=" return confirm('are you want to delete {{this.name}}') "  >Delete</a>
+                </td>
+                
             </tr>
             {{/each}}
         </tbody>

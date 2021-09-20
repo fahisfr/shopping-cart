@@ -24,12 +24,10 @@ module.exports = {
                         console.log('login success');
                         response.user = user
                         response.status = true
-                        resolve(response)
-                        
+                        resolve(response)  
                     }else{
-                        console.log('password wrong .');
-                        resolve({status:false})
-                        
+                        console.log('password false');
+                        resolve({status:false})                      
                     }
                 })
             } else {
