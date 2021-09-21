@@ -7,8 +7,8 @@ module.exports = {
     addProduct: (product, callback) => {
         console.log(product);
         console.log("fin")
-        db.get().collection('product').insertONE(product).then((data) => {
-            console.log(data)
+        db.get().collection('product').insertOne(product).then((data) => {
+         
             callback(data)
 
         })
@@ -22,14 +22,39 @@ module.exports = {
     },
     deleteproduct: (proid) => {
         return new Promise((resolve, reject) => {
-            db.get().collection('product').remove({name: proid}).then((response) => {
+            db.get().collection('product').deleteOne({name: proid}).then((response) => {
                 console.log(response);
                 resolve(response)
             })
   
         })
+    },
+  
+    getproductdetails: (proid) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PROUCT_COLLECTION).findOne({name:proid }).then((product) => {
+                resolve(product)
+            })
+        })
+        
+    },
+    updateproduct: (proid, prodetails) => {
+        return new Promise((resolve, reject) => {
+            
+            db.get().collection(collection.PROUCT_COLLECTION)
+                .updateOne({ name: proid }, {
+                    $set: {
+                    name: prodetails.name,
+                    description: prodetails.description,
+                    price: prodetails.price,
+                    category: prodetails.category,
+                    
+                }
+            }).then((response)=>{
+                resolve()
+            })
+        })
     }
-
    
      
 }   

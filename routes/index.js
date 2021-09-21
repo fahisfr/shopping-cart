@@ -65,4 +65,5 @@ router.get('/cart',verifylogin, (req, res) => {
  res.render('user/cart')
 })
 
+
 module.exports = router;

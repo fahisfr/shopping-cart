@@ -1,0 +1,28 @@
+<div style="margin: 30px;">
+    <form action="/admin/edit-product/{{product.name}}" method="post" style="width: 60%;" enctype="multipart/form-data">
+        <label for="">Name</label><br>
+        <input type="text" name="name" value="{{product.name}}"><br>
+
+        <label for="">Category</label><br>
+        <input type="text" name="category" value="{{product.category}}"><br>
+
+        <label for="">Price</label><br>
+        <input type="text" name="price" value="{{product.price}}"><br>
+
+
+        <label for="">Description</label><br>
+        <input type="text" name="description" value="{{product.description}}">
+        <br>
+        <img src="/product-images/{{product.name}}.jpg" alt="" style="height: 100px;">
+        <br>
+
+
+
+        <label class="form-label" for="customFile">Default file input example</label>
+        <input type="file" class="form-control" name="img" />
+
+        <button type="submit">submit</button>
+
+
+    </form>
+</div>
