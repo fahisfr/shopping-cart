@@ -15,13 +15,17 @@ const verifylogin = ((req, res, next) => {
   
 })
 
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
   let user = req.session.user
   
-  console.log(user)
+  console.log(user);
+  let cartcount = null
+  if (req.session.user) {
+    cartcount = await userHelpers.getCartCount(req.session.user._id)
+  }
   produthelper.getAllProducts().then((products) => {
 
-    res.render('user/views-project', { products,user })
+    res.render('user/views-project', { products,user,cartcount})
      
    })
 });
@@ -67,11 +71,12 @@ router.get('/cart', verifylogin, async(req, res) => {
   res.render('user/cart',{products,user:req.session.user})
   
 })
-router.get('/add-to-cart/:id',verifylogin, (req, res) => {
+router.get('/add-to-cart/:id', (req, res) => {
+  console.log('call alrt');
   userHelpers.addToCart(req.params.id, req.session.user._id).then(() => {
+    res.json({status:true})
+  
     
-    
-    res.redirect('/')
   })
 })
 
