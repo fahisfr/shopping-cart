@@ -2,13 +2,12 @@ var db = require('../config/connection')
 var collection = require('../config/collections')
 var bcrypt = require('bcrypt')
 const objectid = require('mongodb').ObjectId
+const collections = require('../config/collections')
 const { response } = require('express')
-const { Collection } = require('mongodb')
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
             userData.Password = await bcrypt.hash(userData.Password, 10)
-            console.log("fine")
             db.get().collection('user').insertOne(userData).then((data) => {
                 console.log(data)
                 resolve(data)
@@ -36,7 +35,6 @@ module.exports = {
             } else {
                 console.log('login failed')
                 resolve({ status: false })
-
             }
         })
     }, addToCart: (proid, userid) => {
@@ -55,7 +53,7 @@ module.exports = {
                 //-1 meaning product not cart (array -1 position =null)
                 if (proexist != -1) {
                     //update product quantity number . finding producs,item == proid then update 
-                    db.get().collection(collection.CART_COLLECTION).updateOne({ 'products.item': objectid(proid) },
+                    db.get().collection(collection.CART_COLLECTION).updateOne({user:objectid(userId), 'products.item': objectid(proid) },
                         {// inc =increase quantity 
                             $inc:{'products.$.quantity':1}
                         }
@@ -112,13 +110,16 @@ module.exports = {
                         foreignField: '_id',
                         as:'product'
                     }
+                },
+                {
+                    // product array to object{products items}
+                    $project: {
+                        item: 1,quantity: 1,product:{$arrayElemAt:['$product',0]}
+                    }
                 }
-
             ]).toArray()
             console.log(cartItems)
-  
-            resolve(cartItems)
-            
+            resolve(cartItems) 
         })
     
     },
@@ -131,6 +132,39 @@ module.exports = {
             }
             resolve(count)
         })
+    },
+    chageproductcount: (data) => {
+        count = parseInt(data.count)
+        quantity = parseInt(data.quantity)
+        console.log(data)
+        console.log(count+quantity);
+        return new Promise(async (resolve, reject) => {
+            if (count == -1 && quantity == 1) {
+                console.log("delete call")
+                db.get().collection(collection.CART_COLLECTION).updateOne({ _id: objectid(data.cart) },
+                    {//removes only the elements in the array that match the specified <value> exactly, including order.
+                        $pull: { products: { item: objectid(data.product) } }
+                    }
+                ).then((response) => {
+                    console.log('call find');
+                    resolve({ removeProduct: true })
+                })
+                
+            } else {
+                console.log('teset pass')
+                db.get().collection(collection.CART_COLLECTION).updateOne({ _id: objectid(data.cart), 'products.item': objectid(data.product) },
+                    {// inc =increase quantity 
+                        $inc: { 'products.$.quantity': count }
+                    }
+                ).then((response) => {
+                
+                    resolve(true)
+                })
+            
+            }
+            
+        })
+    
     }
         
              

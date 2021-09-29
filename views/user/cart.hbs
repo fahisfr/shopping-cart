@@ -21,26 +21,21 @@
                 {{#each products}}
                 <tr>
                     <td>
-                        {{#each product}}
                         <div class="product-item">
-                            <a class="product-thumb" href="#"><img src="/product-images/{{this.name}}.jpg"
+                            <a class="product-thumb" href="#"><img src="/product-images/{{this.product.name}}.jpg"
                                     alt="Product"></a>
                             <div class="product-info">
-                                <h4 class="product-title"><a href="#">{{this.name}}</a></h4><span><em>Size:</em>
+                                <h4 class="product-title"><a href="#">{{this.product.name}}</a></h4><span><em>Size:</em>
                                     10.5</span><span><em>Color:</em> Dark Blue</span>
                             </div>
                         </div>
                     </td>
-                    <td class="text-center text-lg text-medium">{{this.price}}</td>
-                    {{/each}}
+                    <td class="text-center text-lg text-medium">{{this.product.price}}</td>
                     <td class="text-center">
-                        <div class="count-input">
-                            <select class="form-control">
-                                <option>{{this.quantity}}</option>
-                            </select>
-                        </div>
+                        <button class="cart-item-count mr-3 btn btn-danger" onclick="changequantity('{{this._id}}','{{this.product._id}}',-1)" >-</button> <span id="{{this.product._id}}" >{{this.quantity}}</span> <button 
+                            class="cart-item-count mr-3 btn btn-success" onclick="changequantity('{{this._id}}','{{this.product._id}}',1)">+</button>
                     </td>
-                    <td class="text-center text-lg text-medium"></td>
+                    <td class="text-center text-lg text-medium">False</td>
                     <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" title=""
                             data-original-title="Remove item"><i class="fa fa-trash"></i></a></td>
                    
@@ -68,3 +63,30 @@
                 href="/">Checkout</a></div>
     </div>
 </div>
+<script>
+    function changequantity(cart_Id,pro_Id,count){
+        // take elemnt value 
+        let quantity=parseInt(document.getElementById(pro_Id).innerHTML)
+        count=parseInt(count)
+        $.ajax({            
+            url:'/chage-product-quantity',
+            data:{
+                cart:cart_Id,
+                product:pro_Id,
+                count:count,
+                quantity:quantity
+            },
+            method:'post',
+            success:(response)=>{
+                if (response.removeProduct){
+                   // alert("product removed from cart")
+                    location.reload()
+                
+
+                }else{
+                    document.getElementById(pro_Id).innerHTML=quantity+count
+                }
+            }
+        })
+    }
+</script>
