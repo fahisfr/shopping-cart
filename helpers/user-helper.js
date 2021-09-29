@@ -53,7 +53,7 @@ module.exports = {
                 //-1 meaning product not cart (array -1 position =null)
                 if (proexist != -1) {
                     //update product quantity number . finding producs,item == proid then update 
-                    db.get().collection(collection.CART_COLLECTION).updateOne({user:objectid(userId), 'products.item': objectid(proid) },
+                    db.get().collection(collection.CART_COLLECTION).updateOne({user:objectid(userid), 'products.item': objectid(proid) },
                         {// inc =increase quantity 
                             $inc:{'products.$.quantity':1}
                         }
@@ -165,6 +165,53 @@ module.exports = {
             
         })
     
+    },
+    getTotalAmount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+        
+            let total = await db.get().collection(collection.CART_COLLECTION).aggregate([
+                {
+                    $match:{user:objectid(userId)}
+                },
+             
+                {
+
+                    $unwind: '$products'
+                    
+                },
+                {
+                    
+                    $project: {
+                        item: '$products.item',
+                        quantity:'$products.quantity'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collection.PROUCT_COLLECTION,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as:'product'
+                    }
+                },
+                {
+                    
+                    $project: {
+                        item: 1,quantity: 1,product:{$arrayElemAt:['$product',0]}
+                    }
+                },
+                {
+                    $group: {
+                        _id:null,
+                        total: { $sum:{$multiply:['$quantity','$product.price']}}
+                    }
+                }
+            ]).toArray()
+            console.log(total[0].total)
+            resolve(total[0].total) 
+        })
+    
+        
     }
         
              

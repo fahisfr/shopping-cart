@@ -87,5 +87,9 @@ router.post('/chage-product-quantity', (req, res,next) => {
     
   })
 })
+router.get('/place-order',verifylogin,async (req, res) => {
+  let total = await userHelpers.getTotalAmount(req.session.user._id)
+  res.render('user/place-order',{total})
+})
 
 module.exports = router;
