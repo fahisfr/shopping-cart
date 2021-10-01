@@ -45,6 +45,7 @@ router.post('/signup', (req, res) => {
   
   userHelpers.doSignup(req.body).then((response) => {
     console.log(response)
+  res.render('/login')
   })
 
 });
@@ -67,8 +68,9 @@ router.get('/logout', (req, res) => {
 })
 router.get('/cart', verifylogin, async(req, res) => {
   products = await userHelpers.getCartProduct(req.session.user._id)
+  let totalvalue = await userHelpers.getTotalAmount(req.session.user._id)
   console.log(products);
-  res.render('user/cart',{products,user:req.session.user})
+  res.render('user/cart',{products,user:req.session.user._id})
   
 })
 router.get('/add-to-cart/:id', (req, res) => {
@@ -79,9 +81,11 @@ router.get('/add-to-cart/:id', (req, res) => {
     
   })
 })
-router.post('/chage-product-quantity', (req, res,next) => {
+router.post('/chage-product-quantity',(req, res,next) => {
   console.log("pass")
-  userHelpers.chageproductcount(req.body).then((response) => { 
+  userHelpers.chageproductcount(req.body).then(async(response) => {
+   response.total = await userHelpers.getTotalAmount(req.body.user)
+    console.log(response.total);
     res.json(response)
     
     
@@ -89,7 +93,15 @@ router.post('/chage-product-quantity', (req, res,next) => {
 })
 router.get('/place-order',verifylogin,async (req, res) => {
   let total = await userHelpers.getTotalAmount(req.session.user._id)
-  res.render('user/place-order',{total})
+  res.render('user/place-order',{total,user:req.session.user})
 })
-
+router.post('/place-order', async(req, res) => {
+  let products = await userHelpers.getCartpructslist(req.body.userId)
+  let totalprice= await userHelpers.getTotalAmount(req.body.userId)
+  userHelpers.placeOrder(req.body, products, totalprice).then((response) => {
+    res.json({status:true})
+    
+  })
+  console.log(req.body);
+})
 module.exports = router;

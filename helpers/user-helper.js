@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt')
 const objectid = require('mongodb').ObjectId
 const collections = require('../config/collections')
 const { response } = require('express')
+const { resolve, reject } = require('promise')
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
@@ -158,7 +159,7 @@ module.exports = {
                     }
                 ).then((response) => {
                 
-                    resolve(true)
+                    resolve({status:true})
                 })
             
             }
@@ -207,11 +208,42 @@ module.exports = {
                     }
                 }
             ]).toArray()
-            console.log(total[0].total)
             resolve(total[0].total) 
         })
     
         
+    },
+    placeOrder: (order,products,total) => {
+        return new Promise((resolve, reject) => {
+            console.log(order, products, total);
+            // if "paymet_method" str value use order['paymet_method']
+            let status = order.paymet_method === 'COD' ? 'placed' : 'pending'
+            let orderobj = {
+                deliverydetails: {
+                    mobile: order.mobile,
+                    address: order.address,
+                    pincode:order.pincode
+                },
+                userId: objectid(order.userId),
+                paymentMethod: order.payment_method,
+                products: products,
+                totalAmount: total,
+                datatime:new Date().toLocaleString(),
+                status:status
+            }
+            db.get().collection(collection.ORDER_COLLECTION).insertOne(orderobj).then((response) => {
+                db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectid(order.userId)})
+                resolve()
+            })
+        })
+        
+    },
+    getCartpructslist: (userId) => {
+        return new Promise(async(resolve, reject) => {
+            let cart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectid(userId) })
+            resolve(cart.products)
+        })
+    
     }
         
              
