@@ -244,6 +244,56 @@ module.exports = {
             resolve(cart.products)
         })
     
+    },
+    getUseroOrder: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: objectid(userId) }).toArray()
+            console.log(orders);
+            resolve(orders)
+            
+        })
+       
+        
+    },
+    getOdrderProducts: (orderId) => {
+        return new Promise(async (resolve, reject) => {
+            //(not)aggregate connect all database data
+            let orderItems = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {//matching cart user id ==userId
+                    $match: {_id: objectid(orderId) }
+                },
+                //before data one {_id ,user=cart owner userid ,products in one[array] }
+                {
+
+                    $unwind: '$products'
+                    //unwind split {id ,user,products:{item :productid,quantity}} (your have cart 2 products , split two {})
+                },
+                {
+                    //take product item and quantity 
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity'
+                    }
+                },
+                {
+                    $lookup: {
+                        //localField;item (products id), foreignField_ id match products id as products
+                        from: collection.PROUCT_COLLECTION,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    // product array to object{products items}
+                    $project: {
+                        item: 1, quantity: 1, product: { $arrayElemAt: ['$product', 0] }
+                    }
+                }
+            ]).toArray()
+            console.log(orderItems)
+            resolve(orderItems)
+        })
     }
         
              
