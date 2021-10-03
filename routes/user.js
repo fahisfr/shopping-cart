@@ -70,7 +70,7 @@ router.get('/cart', verifylogin, async(req, res) => {
   products = await userHelpers.getCartProduct(req.session.user._id)
   let totalvalue = await userHelpers.getTotalAmount(req.session.user._id)
   console.log(products);
-  res.render('user/cart',{products,user:req.session.user._id})
+  res.render('user/cart',{products,user:req.session.user._id,totalvalue})
   
 })
 router.get('/add-to-cart/:id', (req, res) => {
@@ -98,8 +98,17 @@ router.get('/place-order',verifylogin,async (req, res) => {
 router.post('/place-order', async(req, res) => {
   let products = await userHelpers.getCartpructslist(req.body.userId)
   let totalprice= await userHelpers.getTotalAmount(req.body.userId)
-  userHelpers.placeOrder(req.body, products, totalprice).then((response) => {
-    res.json({status:true})
+  userHelpers.placeOrder(req.body, products, totalprice).then((orderID) => {
+    if (req.body.payment_method === 'COD') {
+      res.json({codsuccess:true})
+    } else {
+      userHelpers.generateRazorpay(orderID, totalprice).then((response) => {
+        console.log('main status pass')
+        res.json(response)
+        
+      })
+    }
+    
     
   })
   console.log(req.body);
@@ -117,5 +126,8 @@ router.get('/view-order-products/:id', async (req, res) => {
   res.render('user/view-order-products',{user:req.session.user,products})
   
 })
-  
+router.post('/verify-payment',(req,res)=> {
+  console.log(req.body);
+  console.log("i am done")
+})
 module.exports = router;

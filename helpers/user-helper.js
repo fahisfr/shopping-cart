@@ -5,6 +5,12 @@ const objectid = require('mongodb').ObjectId
 const collections = require('../config/collections')
 const { response } = require('express')
 const { resolve, reject } = require('promise')
+const Razorpay =require('razorpay')
+const { ObjectId } = require('bson')
+var instance = new Razorpay({
+  key_id: 'rzp_test_f12aAKXBgFvhKY',
+  key_secret: '3Yv721SQWA0MumBa8ahPo0cr',
+});
 module.exports = {
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
@@ -232,8 +238,9 @@ module.exports = {
                 status:status
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderobj).then((response) => {
-                db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectid(order.userId)})
-                resolve()
+                db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectid(order.userId) })
+                console.log(response);
+                resolve(response.insertedId.toString())
             })
         })
         
@@ -294,6 +301,27 @@ module.exports = {
             console.log(orderItems)
             resolve(orderItems)
         })
+    },
+    generateRazorpay: (orderId, total) => {
+        return new Promise((resolve, reject) => {
+            var options = {
+            
+                amount: total,  
+                currency: "INR",
+                receipt:orderId
+            };
+            instance.orders.create(options, function (err, order) {
+                if (err) {
+                    console.log(err);
+                } else {
+                     console.log('new order:', order);
+                resolve(order)
+                }
+              
+            });
+            
+        })
+         
     }
         
              
