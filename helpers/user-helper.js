@@ -322,7 +322,43 @@ module.exports = {
             
         })
          
+    },
+    verifyPayment: (details) => {
+        return new Promise((resolve, reject) => {
+            console.log("fine")
+            const crypte = require('crypto')
+            console.log('pass 1');
+            let hmac = crypte.createHmac('sha256', '3Yv721SQWA0MumBa8ahPo0cr')
+            console.log('pass 2');
+            hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'])
+            console.log('pass 3');
+            hmac = hmac.digest('hex')
+            console.log('pass 4')
+            console.log(hmac)
+            if (hmac == details['payment[razorpay_signature]']) {
+                console.log('fine')
+                
+                resolve()
+            } else {
+                reject()
+            }
+        })
+    },
+    chagepaymentstatus: (orderID) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: ObjectId(orderID) },
+            {
+                $set: {
+                    status:'placed'
+                }
+            }
+            ).then(() => {
+                resolve()
+            })
+        })
+    
     }
+    
         
              
 }
