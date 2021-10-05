@@ -68,7 +68,12 @@ router.get('/logout', (req, res) => {
 })
 router.get('/cart', verifylogin, async(req, res) => {
   products = await userHelpers.getCartProduct(req.session.user._id)
-  let totalvalue = await userHelpers.getTotalAmount(req.session.user._id)
+  let totalvalue = 0
+  console.log(totalvalue);
+  if (products.length > 0) {
+    totalvalue = await userHelpers.getTotalAmount(req.session.user._id)
+    
+  }
   console.log(products);
   res.render('user/cart',{products,user:req.session.user._id,totalvalue})
   
@@ -83,12 +88,14 @@ router.get('/add-to-cart/:id', (req, res) => {
 })
 router.post('/chage-product-quantity',(req, res,next) => {
   console.log("pass")
-  userHelpers.chageproductcount(req.body).then(async(response) => {
-   response.total = await userHelpers.getTotalAmount(req.body.user)
+  userHelpers.chageproductcount(req.body).then(async (response) => {
+    if (response.removeProduct) {
+      response.total=0
+    } else {
+      response.total = await userHelpers.getTotalAmount(req.body.user)
+    }
     console.log(response.total);
     res.json(response)
-    
-    
   })
 })
 router.get('/place-order',verifylogin,async (req, res) => {

@@ -4,6 +4,7 @@ var collection=require('../config/collections');
 var objectid =require('mongodb').ObjectId;
 const { resolve, reject } = require('promise');
 const { Collection } = require('mongodb');
+const collections = require('../config/collections');
 module.exports = {
     adminlogin: (admin) => {
         return new Promise(async (resolve, reject) => {
@@ -87,6 +88,20 @@ module.exports = {
         return new Promise((resolve, reject) => {
             let odrers = db.get().collection(collection.ORDER_COLLECTION).find().toArray()
             resolve(odrers)
+        })
+    },
+    productShipped: (orderId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectid(orderId) },
+            {
+                $set: {
+                    shipping:'Shipped'
+                    
+                }
+            }
+            ).then(() => {
+                resolve()
+            })
         })
     }
    

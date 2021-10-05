@@ -97,9 +97,15 @@ router.post('/edit-product/:id', (req, res) => {
 
   })
 })
-router.get('/allorders', (req, res) => {
+router.get('/allorders/', (req, res) => {
   productHelper.getAllorder().then((orders) => {
     res.render('admin/orders',{orders})
   })
+})
+router.get('/allorders/shipped/:id', (req, res) => {
+  console.log(req.params.id);
+  productHelper.productShipped(req.params.id).then(response)
+  res.redirect('/admin/allorders')
+  
 })
 module.exports = router;

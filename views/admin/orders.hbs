@@ -24,7 +24,7 @@
                 <td>{{this.deliverydetails.mobile}}</td>
                 <td>{{this.totalAmount}}</td>
                 <td>{{this.paymentMethod}}</td>
-                <td>{{this.shipping}}</td>
+                <td ><a  href="/admin/allorders/shipped/{{this._id}}" class="btn btn-primary" onclick="return   confirm('are you want to delete {{this._id}}') " >{{this.shipping}}</a></td>
                 <td><a href="view-order-products/{{this._id}}">view products</a></td>
                 
             </tr>
