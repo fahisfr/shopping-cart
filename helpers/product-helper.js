@@ -1,12 +1,40 @@
 var db = require('../config/connection');
 var collection=require('../config/collections');
 
-var objectid =require('mongodb').ObjectId
+var objectid =require('mongodb').ObjectId;
+const { resolve, reject } = require('promise');
+const { Collection } = require('mongodb');
 module.exports = {
+    adminlogin: (admin) => {
+        return new Promise(async (resolve, reject) => {
+            let response={}
+
+            let adminkey = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminid: admin.adminkey })
+            if (adminkey) {
+                db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminpass: admin.adminpass }).then((status) => {
+                    if (status) {
+                        console.log('login success');
+                        response.admin = admin
+                        response.status = true
+                        resolve(response)
+                        
+                    } else {
+                        console.log('password is wrong');
+                        resolve({status:false})
+                    }
+                })
+                
+                
+            } else {
+                console.log('admin key not valied')
+                resolve({status:false})
+            }
+      })  
+    },
 
     addProduct: (product, callback) => {
         console.log(product);
-        console.log("fin")
+        product.price = parseInt(product.price)
         db.get().collection('product').insertOne(product).then((data) => {
          
             callback(data)
@@ -53,6 +81,12 @@ module.exports = {
             }).then((response)=>{
                 resolve()
             })
+        })
+    },
+    getAllorder: () => {
+        return new Promise((resolve, reject) => {
+            let odrers = db.get().collection(collection.ORDER_COLLECTION).find().toArray()
+            resolve(odrers)
         })
     }
    

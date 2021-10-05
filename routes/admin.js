@@ -5,9 +5,16 @@ var router = express.Router();
 const produthelper = require('../helpers/product-helper')
 
 var today = new Date();
+const verifyadminlogin = ((req, res, next) => {
+  if (req.session.adminlogin) {
+    next()
+  } else {
+    res.redirect('admin/admin-login')
+  }
 
+})
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/',verifyadminlogin, function (req, res, next) {
   
   produthelper.getAllProducts().then((products) => {
     console.log(products);
@@ -16,6 +23,29 @@ router.get('/', function (req, res, next) {
   
   
 });
+router.get('/admin-login', (req, res) => {
+  if (req.session.adminlogin){
+    res.redirect('/admin')
+  } else {
+    res.render('admin/login',{'adminloginerr':req.session.adminloginerr})
+    
+  }
+  
+})
+router.post('/admin-login', (req, res) => {
+  productHelper.adminlogin(req.body).then((response) => {
+    if (response.status) {
+      req.session.adminlogin = true
+      res.redirect('/admin')
+    } else {
+      req.session.adminloginerr = "adminkey or adminpass not valied"
+      req.adminlogin = false
+      res.redirect('admin-login')
+      
+    }
+    
+  })
+})
 router.get('/add-product', function (req, res) {
 
  
@@ -65,6 +95,11 @@ router.post('/edit-product/:id', (req, res) => {
       
     }
 
+  })
+})
+router.get('/allorders', (req, res) => {
+  productHelper.getAllorder().then((orders) => {
+    res.render('admin/orders',{orders})
   })
 })
 module.exports = router;
