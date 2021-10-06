@@ -70,6 +70,7 @@ router.get('/cart', verifylogin, async(req, res) => {
   products = await userHelpers.getCartProduct(req.session.user._id)
   let totalvalue = 0
   console.log(totalvalue);
+  
   if (products.length > 0) {
     totalvalue = await userHelpers.getTotalAmount(req.session.user._id)
     
@@ -97,6 +98,23 @@ router.post('/chage-product-quantity',(req, res,next) => {
     console.log(response.total);
     res.json(response)
   })
+})
+router.post('/remove-cart-product', (req, res) => {
+  console.log(req.body)
+  userHelpers.removeCartProduct(req.body).then((response) => {
+  
+    res.json(response)
+  })
+
+})
+router.post('/clear-user-cart', (req, res) => {
+  console.log('test.')
+  console.log(req.body);
+  userHelpers.ClearCart(req.body).then((response) => {
+    console.log('hie')
+    res.json(response)
+  })
+  
 })
 router.get('/place-order',verifylogin,async (req, res) => {
   let total = await userHelpers.getTotalAmount(req.session.user._id)

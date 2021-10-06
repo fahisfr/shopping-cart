@@ -14,7 +14,7 @@
                     <th class="text-center">Price</th>
                     <th class="text-center">Quantity</th>
                     <th class="text-center">Total</th>
-                    <th class="text-center"><a class="btn btn-sm btn-outline-danger" href="#">Clear Cart</a></th>
+                    <th class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="ClearCart('{{this.user}}')" >Clear Cart</button></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,8 +38,7 @@
                             class="cart-item-count mr-3 btn btn-success" onclick="changequantity('{{this._id}}','{{this.product._id}}','{{../user}}',1)">+</button>
                     </td>
                     <td class="text-center text-lg text-medium">False</td>
-                    <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" title=""
-                            data-original-title="Remove item"><i class="fa fa-trash"></i></a></td>
+                    <td class="text-center text-lg text-medium" > <button class=" mr-3 btn btn-danger" onclick="removeProudct('{{this._id}}','{{this.product._id}}','{{../user}}')" >Delete</button></td>
                    
                 </tr>
 
@@ -94,5 +93,38 @@
                 }
             }
         })
+    }
+    function removeProudct(cartId,proId,userId){
+        console.log(userId,proId,userId)
+        $.ajax({
+            url:'/remove-cart-product',
+            data:{
+                user:userId,
+                cart:cartId,
+                product:proId
+            },
+            method:'post', 
+            success:(response)=>{
+                if(response.removeProduct){
+                    location.reload()
+                }else{
+                    console.log('err finde')
+                }
+
+            }
+
+        })
+    }
+    function ClearCart(userId){
+        $.ajax({
+            url:'/clear-user-cart',
+            data:{
+                user:userId
+            },
+            method:'post',
+            success:(response)=>{
+                location.reload()
+            }
+        })       
     }
 </script>

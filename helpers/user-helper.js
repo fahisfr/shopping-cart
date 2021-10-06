@@ -173,6 +173,28 @@ module.exports = {
         })
     
     },
+    removeCartProduct: (data) => {
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.CART_COLLECTION).updateOne({ _id: objectid(data.cart) },
+                {//removes only the elements in the array that match the specified <value> exactly, including order.
+                    $pull: { products: { item: objectid(data.product) } }
+                }
+            ).then((response) => {
+                console.log('call find');
+                resolve({ removeProduct: true })
+            })
+             
+        })
+        
+    },
+    ClearCart: (data) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectid(data.user) }).then(() => {
+                resolve(true)
+            })
+        })
+        
+    },
     getTotalAmount: (userId) => {
         return new Promise(async (resolve, reject) => {
         
