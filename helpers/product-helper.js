@@ -95,12 +95,29 @@ module.exports = {
             db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectid(orderId) },
             {
                 $set: {
-                    shipping:'Shipped'
+                    shipping:true
                     
                 }
             }
             ).then(() => {
                 resolve()
+            })
+        })
+    },
+    getUserOrder: (cartId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: objectid(cartId) }).then((data) => {
+                console.log(data)
+                resolve(data)
+            })
+        })
+        
+    },
+    deliered: (OrderId, Order) => {
+        console.log(Order)
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).deleteOne({ _id: objectid(OrderId) }).then(() => {
+                db.get().collection(collection.DELIVERED_COLLECTION).insert(Order)
             })
         })
     }

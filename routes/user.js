@@ -44,7 +44,7 @@ router.post('/signup', (req, res) => {
   
   userHelpers.doSignup(req.body).then((response) => {
     console.log(response)
-  res.render('/login')
+  res.redirect('/login')
   })
 
 });
@@ -111,7 +111,7 @@ router.post('/clear-user-cart', (req, res) => {
   console.log('test.')
   console.log(req.body);
   userHelpers.ClearCart(req.body).then((response) => {
-    console.log('hie')
+   
     res.json(response)
   })
   

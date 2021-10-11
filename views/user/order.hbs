@@ -25,7 +25,12 @@
                 <td>{{this.totalAmount}}</td>
                 <td>{{this.paymentMethod}}</td>
                 <td>{{this.status}}</td>
-                <td>{{this.shipping}}</td>
+                    {{#if this.shipping}}
+                    <td>Shipped</td>
+                    {{else }}
+                    <td>Shpiping Processing </td>
+                    
+                    {{/if}}
                 <td><a href="view-order-products/{{this._id}}">view products</a></td>
                 
             </tr>

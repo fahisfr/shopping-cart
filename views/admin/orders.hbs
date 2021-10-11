@@ -8,8 +8,8 @@
                 <th class="text-center">Mobile</th>
                 <th class="text-center">Amount</th>
                 <th class="text-center">Payment</th>
-                <th class="text-center">Payment Status</th>
-                <th class="text-center">shpping status</th>
+                <th class="text-center">Shpping status</th>
+                <th>Deliveryd</th>
                 <th></th>
                 
             </tr>
@@ -24,8 +24,16 @@
                 <td>{{this.deliverydetails.mobile}}</td>
                 <td>{{this.totalAmount}}</td>
                 <td>{{this.paymentMethod}}</td>
-                <td ><a  href="/admin/allorders/shipped/{{this._id}}" class="btn btn-primary" onclick="return   confirm('are you want to delete {{this._id}}') " >{{this.shipping}}</a></td>
+                <td >
+                    {{#if this.shipping}}
+                    <a  class="btn btn-success btn disabled">"SHIPPED"</a>
+                    {{else }}
+                    <a href="/admin/allorders/shipped/{{this._id}}" class="btn btn-primary" onclick="return  confirm('are you want to shippe this order {{this._id}}') " >Shippe</a>
+                    {{/if}}
+                </td>
+                <td><a class="btn btn-danger" href="view-order-delivered/{{{this._id}}}">Deliveryd</a></td>
                 <td><a href="view-order-products/{{this._id}}">view products</a></td>
+
                 
             </tr>
             {{/each}}

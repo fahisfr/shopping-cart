@@ -259,7 +259,7 @@ module.exports = {
                 totalAmount: total,
                 datatime:new Date().toLocaleString(),
                 status: status,
-                shipping:'Shipping Processing'
+                shipping:false
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderobj).then((response) => {
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: objectid(order.userId) })
@@ -368,7 +368,7 @@ module.exports = {
             db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: ObjectId(orderID) },
             {
                 $set: {
-                    status:'placed'
+                    status:'palced'
                 }
             }
             ).then(() => {

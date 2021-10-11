@@ -1,8 +1,11 @@
 const { response } = require('express');
 var express = require('express');
+const { USER_COLLECTION } = require('../config/collections');
+const { get } = require('../config/connection');
 const productHelper = require('../helpers/product-helper');
 var router = express.Router();
-const produthelper = require('../helpers/product-helper')
+const produthelper = require('../helpers/product-helper');
+const userHelper = require('../helpers/user-helper');
 
 var today = new Date();
 const verifyadminlogin = ((req, res, next) => {
@@ -105,6 +108,12 @@ router.get('/allorders/', (req, res) => {
 router.get('/allorders/shipped/:id', (req, res) => {
   console.log(req.params.id);
   productHelper.productShipped(req.params.id).then(response)
+  res.redirect('/admin/allorders')
+  
+})
+router.get('/view-order-delivered/:id',async (req, res) => {
+  let order =await productHelper.getUserOrder(req.params.id)
+  productHelper.deliered(req.params.id, order)
   res.redirect('/admin/allorders')
   
 })
