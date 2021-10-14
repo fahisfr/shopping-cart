@@ -117,4 +117,17 @@ router.get('/view-order-delivered/:id',async (req, res) => {
   res.redirect('/admin/allorders')
   
 })
+router.get('/users', (req, res) => {
+  productHelper.getUserDetails().then((users) => {
+    console.log(users)
+    res.render('admin/users',{users})
+  })
+})
+router.get('/users/delete-user/:id', (req, res) => {
+  console.log(req.params.id)
+  productHelper.deleteUser(req.params.id).then((response) => {
+    res.redirect('/admin/users')
+  })
+  
+})
 module.exports = router;

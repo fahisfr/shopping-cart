@@ -1,0 +1,24 @@
+<section style="padding: 40px;">
+    <table class="table">
+        
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>User Email</th>
+                <th>Delete user</th>
+
+
+            </tr>
+        </thead>
+        {{#each users}}
+        <tbody>
+            <tr>
+                <td>{{this.user}}</td>
+                <td>{{this.email}}</td>
+                <td><a href="/admin/users/delete-user/{{this._id}} " class="btn btn-danger" >delete</a></td>
+            </tr>
+        </tbody>
+        {{/each }}
+    </table>
+</section>
+

@@ -15,6 +15,7 @@ const verifylogin = ((req, res, next) => {
   
 })
 router.get('/', async function (req, res, next) {
+  console.log(req.session);
   let user = req.session.user
   
   console.log(user);

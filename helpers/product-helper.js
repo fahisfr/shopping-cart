@@ -116,9 +116,31 @@ module.exports = {
     deliered: (OrderId, Order) => {
         console.log(Order)
         return new Promise((resolve, reject) => {
+            Order = {
+                userId: objectid(Order.userId),
+                delieredttime: new Date().toLocaleString(),
+                deliverydetails: Order.deliverydetails,
+                products: Order.products,
+                paymentMethod: Order.paymentMethod,
+                totalAmount: Order.totalAmount,
+                Deliverytime:Order.datatime   
+            }
             db.get().collection(collection.ORDER_COLLECTION).deleteOne({ _id: objectid(OrderId) }).then(() => {
                 db.get().collection(collection.DELIVERED_COLLECTION).insert(Order)
             })
+        })
+    },
+    getUserDetails: () => {
+        return new Promise((resolve, reject) => {
+            let user = db.get().collection(collection.USER_COLLECTION).find().toArray()
+            resolve(user)
+        })
+    },
+    deleteUser: (userID) => {
+        console.log('test 1 ')
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.USER_COLLECTION).deleteOne({ _id:objectid(userID) }).then()
+            resolve(true)
         })
     }
    
