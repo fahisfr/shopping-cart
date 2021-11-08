@@ -36,18 +36,28 @@ router.get('/admin-login', (req, res) => {
   
 })
 router.post('/admin-login', (req, res) => {
-  productHelper.adminlogin(req.body).then((response) => {
-    if (response.status) {
-      req.session.adminlogin = true
-      res.redirect('/admin')
-    } else {
-      req.session.adminloginerr = "adminkey or adminpass not valied"
-      req.adminlogin = false
-      res.redirect('admin-login')
-      
-    }
+  if (req.body) {
+    req.session.adminlogin = true
+    res.redirect('/admin')
+  } else {
+    req.session.adminloginerr = "adminkey or adminpass not valied"
+       req.adminlogin = false
+       res.redirect('admin-login')
+
     
-  })
+  }
+  // productHelper.adminlogin(req.body).then((response) => {
+  //   if (response.status) {
+  //     req.session.adminlogin = true
+  //     res.redirect('/admin')
+  //   } else {
+  //     req.session.adminloginerr = "adminkey or adminpass not valied"
+  //     req.adminlogin = false
+  //     res.redirect('admin-login')
+      
+  //   }
+    
+  // })
 })
 router.get('/add-product', function (req, res) {
 

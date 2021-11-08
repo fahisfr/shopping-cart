@@ -8,28 +8,31 @@ const collections = require('../config/collections');
 module.exports = {
     adminlogin: (admin) => {
         return new Promise(async (resolve, reject) => {
-            let response={}
+            // let response = {
+                
+            // }
+            // resolve()
 
-            let adminkey = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminid: admin.adminkey })
-            if (adminkey) {
-                db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminpass: admin.adminpass }).then((status) => {
-                    if (status) {
-                        console.log('login success');
-                        response.admin = admin
-                        response.status = true
-                        resolve(response)
+            // let adminkey = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminid: admin.adminkey })
+            // if (adminkey) {
+            //     db.get().collection(collection.ADMIN_COLLECTION).findOne({ adminpass: admin.adminpass }).then((status) => {
+            //         if (status) {
+            //             console.log('login success');
+            //             response.admin = admin
+            //             response.status = true
+            //             resolve(response)
                         
-                    } else {
-                        console.log('password is wrong');
-                        resolve({status:false})
-                    }
-                })
+            //         } else {
+            //             console.log('password is wrong');
+            //             resolve({status:false})
+            //         }
+            //     })
                 
                 
-            } else {
-                console.log('admin key not valied')
-                resolve({status:false})
-            }
+            // } else {
+            //     console.log('admin key not valied')
+            //     resolve({status:false})
+            // }
       })  
     },
 
