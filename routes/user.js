@@ -15,10 +15,9 @@ const verifylogin = ((req, res, next) => {
   
 })
 router.get('/', async function (req, res, next) {
-  console.log(req.session);
+  console.log(req.session)
   let user = req.session.user
   
-  console.log(user);
   let cartcount = null
   if (req.session.user) {
     cartcount = await userHelpers.getCartCount(req.session.user._id)
@@ -44,7 +43,6 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res) => {
   
   userHelpers.doSignup(req.body).then((response) => {
-    console.log(response)
   res.redirect('/login')
   })
 
@@ -153,17 +151,19 @@ router.get('/view-order-products/:id', async (req, res) => {
   
 })
 router.post('/verify-payment',(req,res)=> {
-  console.log(req.body);
-  console.log("i am done")
+ 
   userHelpers.verifyPayment(req.body).then(() => {
-    console.log('pass1');
+    
     userHelpers.chagepaymentstatus(req.body['order[receipt]']).then(() => {
-      console.log("success")
+      
       res.json({status:true})
     })
   }).catch((err) => {
     console.log(err)
     res.json({status:false})
   })
+})
+router.get('/test-api', (req, res) => {
+  res.json('hello fahis')
 })
 module.exports = router;

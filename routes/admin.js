@@ -51,21 +51,17 @@ router.post('/admin-login', (req, res) => {
 })
 router.get('/add-product', function (req, res) {
 
- 
+
   res.render('admin/add-pro')
 
 })
 router.post('/add-product', (req, res) => {
-  console.log(req.body);
-  console.log(req.files.img);
-
-
   produthelper.addProduct(req.body, (result) => {
     let image = req.files.img
     console.log(result)
     
     //var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    image.mv('public/product-images/' + req.body.name +'.jpg', (err, done) => {
+    image.mv('public/product-images/' + req.body.name+'.jpg', (err, done) => {
       if (!err) {
         res.render("admin/add-pro")
         
@@ -75,29 +71,31 @@ router.post('/add-product', (req, res) => {
   })
 })
 router.get('/delete-product/:id', (req, res) => {
-
   let proid = req.params.id
-  console.log(proid);
   produthelper.deleteproduct(proid).then(response)
   console.log( response+"deleted")
-  res.redirect('/admin/')
+  res.redirect('/admin')
   
 })
 router.get('/edit-product/:id', async(req, res) => {
   let product = await produthelper.getproductdetails(req.params.id)
-  console.log(product)
   res.render('admin/edit-product', { product })
  
 })
 router.post('/edit-product/:id', (req, res) => {
   produthelper.updateproduct(req.params.id, req.body).then(() => {
     res.redirect('/admin')
-    if (req.files.img) {
-      let image = req.files.img
-      image.mv('public/product-images/' + req.params.id+'.jpg')
+    try {
+      if (req.files.img) {
+        let image = req.files.img
+        image.mv('public/product-images/' + req.params.id + '.jpg')
+      }
+      
+    } catch (err) {
+      console.log(err)
       
     }
-
+   
   })
 })
 router.get('/allorders/', (req, res) => {
@@ -106,7 +104,6 @@ router.get('/allorders/', (req, res) => {
   })
 })
 router.get('/allorders/shipped/:id', (req, res) => {
-  console.log(req.params.id);
   productHelper.productShipped(req.params.id).then(response)
   res.redirect('/admin/allorders')
   
@@ -124,7 +121,6 @@ router.get('/users', (req, res) => {
   })
 })
 router.get('/users/delete-user/:id', (req, res) => {
-  console.log(req.params.id)
   productHelper.deleteUser(req.params.id).then((response) => {
     res.redirect('/admin/users')
   })
